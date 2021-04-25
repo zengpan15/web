@@ -27,6 +27,9 @@ public class UserDao {
                 user.setReader(rs.getString("reader"));
             }
         }
+//        public int addUser(User register){
+//            String sql =""
+//        }
         JDBCUtil.closeResource(connection, pstm, rs);
         return user;
     }
