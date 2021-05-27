@@ -1,47 +1,104 @@
 package com.zp.dao;
 
-import com.zp.pojo.User;
-import com.zp.utlis.JDBCUtil;
+import com.zp.db.JDBCUtil;
+import com.zp.javabean.Admin;
+import com.zp.javabean.User;
 
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDao {
 
-    public User selectOne(String username) throws SQLException {
-        Connection connection = JDBCUtil.getConnection();
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
+    public User selectOne(String username) {
         User user = null;
-        if (connection!=null) {
-            String sql = "select * from borrow_card where username=?";
-            Object[] params = {username};
-            rs = JDBCUtil.execute(connection, pstm, rs, sql, params);
-            while (rs.next()) {
-                user = new User();
-                user.setUsername(rs.getString("username"));
-                user.setPassword(rs.getString("password"));
-                user.setReader(rs.getString("reader"));
+        try (ResultSet resultSet =
+                     JDBCUtil.getInstance().executeQueryRS("select " +
+                                     "* " +
+                                     "from " +
+                                     "borrow_card where username=?",
+                             new Object[]{username})) {
+
+            while (resultSet.next()) {
+                user = new User(resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getString("reader"),
+                        resultSet.getString("header"),
+                        resultSet.getString("cellphone"),
+                        resultSet.getString("email"),
+                        resultSet.getString("describe"),
+                        resultSet.getBoolean("sex"));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-//        public int addUser(User register){
-//            String sql =""
-//        }
-        JDBCUtil.closeResource(connection, pstm, rs);
+
         return user;
     }
 
-    public int addUser(User user) throws SQLException {
-        Connection connection = JDBCUtil.getConnection();
-        PreparedStatement pstm = null;
-        int result = -1;
-        String sql = "INSERT borrow_card (username,password,reader) VALUES (?,?,?)";
-        Object[] params = {user.getUsername(), user.getPassword(), user.getReader()};
-        result = JDBCUtil.execute(connection, pstm, sql, params);
-        JDBCUtil.closeResource(connection, pstm, null);
+    public Admin selectOne(String username, String password) {
+        Admin admin = null;
+        try (ResultSet resultSet =
+                     JDBCUtil.getInstance().executeQueryRS("select " +
+                                     "* " +
+                                     "from " +
+                                     "admin where username=?",
+                             new Object[]{username})) {
+
+            while (resultSet.next()) {
+                admin = new Admin(resultSet.getString("username"),
+                        resultSet.getString("password"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return admin;
+    }
+
+    public int addUser(User register) {
+        String sql = "INSERT IGNORE INTO `borrow_card` (username," +
+                "`password`, reader) \n" +
+                "SELECT ?,?,? WHERE NOT EXISTS (\n" +
+                "SELECT 1 FROM borrow_card WHERE `username`=?);";
+        return JDBCUtil.getInstance().executeUpdate(sql,
+                new Object[]{register.getUsername(),
+                        register.getPassword(),
+                        register.getReader(),
+                        register.getUsername()});
+    }
+
+    public int updateOne(User user) {
+        int result = 0;
+        StringBuilder sb = new StringBuilder("update borrow_card " +
+                "set reader=?, cellphone=?, email=?, sex=?, " +
+                "borrow_card.`describe`=? ");
+        if (user.getHeader() != null) {
+            sb.append(", header=? where " +
+                    "username=?");
+            result =
+                    JDBCUtil.getInstance().executeUpdate(sb.toString(),
+                            new Object[]{user.getReader(),
+                                    user.getCellphone(),
+                                    user.getEmail(), user.isSex(),
+                                    user.getDescribe(),
+                                    user.getHeader(),
+                                    user.getUsername()});
+        } else {
+            sb.append("where username=?");
+            result =
+                    JDBCUtil.getInstance().executeUpdate(sb.toString(),
+                            new Object[]{user.getReader(),
+                                    user.getCellphone(),
+                                    user.getEmail(), user.isSex(),
+                                    user.getDescribe(),
+                                    user.getUsername()});
+        }
+        return result;
+    }
+
+
+    public boolean delete(User user) {
+        boolean result = false;
         return result;
     }
 }

@@ -1,4 +1,4 @@
-<%@ page import="com.zp.pojo.User" %><%--
+<%@ page import="com.zp.javabean.User" %><%--
   Created by IntelliJ IDEA.
   User: Administrator
   Date: 2021/3/16
@@ -47,7 +47,7 @@
                     <dd><a href="">安全设置</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="">退了</a></li>
+            <li class="layui-nav-item"><a href="index.jsp">退了</a></li>
         </ul>
     </div>
 
@@ -71,15 +71,16 @@
                                title="在借图书"
                                content="./borrowList.jsp" id="3">
                             在借图书</a></dd>
+                        <dd><a href="javascript:;" name="borrow" title="个人信息" content="./personalInfo.jsp" id="4">个人信息</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">读者服务</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">个人信息</a></dd>
-                        <dd><a href="javascript:;">收藏列表</a></dd>
-                    </dl>
-                </li>
+<%--                <li class="layui-nav-item">--%>
+<%--                    <a href="javascript:;">读者服务</a>--%>
+<%--                    <dl class="layui-nav-child">--%>
+<%--                        <dd><a href="javascript:;">个人信息</a></dd>--%>
+<%--                        <dd><a href="javascript:;">收藏列表</a></dd>--%>
+<%--                    </dl>--%>
+<%--                </li>--%>
                 <%--				<li class="layui-nav-item"><a href="">云市场</a></li>--%>
                 <%--				<li class="layui-nav-item"><a href="">发布商品</a></li>--%>
             </ul>
@@ -94,7 +95,7 @@
             <ul class="layui-tab-title">
 
             </ul>
-            <div class="layui-tab-content" style="flex-grow: 1;">
+            <div class="layui-tab-content" style="height: inherit;">
 
             </div>
         </div>
@@ -121,7 +122,7 @@
                 element.tabAdd("tabTemp", {
                     title: $(this).attr("title"),
                     content:
-                        "<iframe src='"+content+"' class='frame' frameborder='0'></iframe>",
+                        "<iframe src='"+content+"' class='frame' frameborder='0' style='height: 100%;width: 100%'></iframe>",
                     id: id
                 });
             }

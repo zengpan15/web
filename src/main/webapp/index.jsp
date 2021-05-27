@@ -35,13 +35,15 @@
         }
 
     </style>
+</head>
 <body>
 
 <%@include file="window.jsp" %>
 
 <div class="login">
     <div class="login-layout">
-        <form class="layui-form" method="post" action="/Library/login">
+        <form class="layui-form" method="post"
+              action="/login">
             <div class="layui-form-item">
                 <label class="layui-form-label logo">
                     图书馆
@@ -67,18 +69,27 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-input-block">
+                        <input type="radio" name="role" value="0"
+                               title="管理员">
+                        <input type="radio" name="role" value="1"
+                               title="用户" checked>
+                    </div>
+                </div>
                 <div class="layui-input-block" style="float: right">
                     <button class="layui-btn" lay-submit
                             lay-filter="*">登录
                     </button>
-                    <button class="layui-btn layui-btn-primary"><a href="./register.jsp">注册</a></button>
+                    <a href="./register.jsp"><span
+                            class="layui-btn layui-btn-primary">注册</span></a>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-<script src="layui.js"></script>
+<script src="/layui/layui.js"></script>
 <script>
     layui.use('form', function () {
         var form = layui.form;

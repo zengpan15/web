@@ -1,13 +1,17 @@
 package com.zp.dao;
 
-import com.zp.javabean.Book;
 import com.zp.db.JDBCUtil;
+import com.zp.javabean.Admin;
+import com.zp.javabean.Book;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 public class BookDao {
+    private ArrayList<Book> result;
+
     public List<Book> selectAll(int pageNum, int pageSize) {
         String sql = "select books.*, book_sort.name as sort " +
                 "from books, book_sort where " +
@@ -80,5 +84,30 @@ public class BookDao {
                         new Date(System.currentTimeMillis())
                 });
         return result;
+    }
+
+    public boolean insert(Book book) {
+
+        return false;
+    }
+
+    public boolean Delete(Book book) {
+        return false;
+    }
+
+
+    public ArrayList<Book> getLikeList(String name) {return result;
+    }
+
+    public void borrowBook(int bid, Admin admin) {
+    }
+
+    public void borrowBook2(int hid) {
+    }
+
+    public void DeleteBook(int bid) {
+    }
+
+    public void get_ListInfo() {
     }
 }

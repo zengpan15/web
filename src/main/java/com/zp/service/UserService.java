@@ -1,27 +1,40 @@
 package com.zp.service;
 
 import com.zp.dao.UserDao;
-import com.zp.pojo.User;
+import com.zp.javabean.Admin;
+import com.zp.javabean.User;
 
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 public class UserService {
 
     private UserDao userDao = new UserDao();
 
-    public String login(String username, String password, HttpSession session) {
-        User user = null;
-        try {
-            user = userDao.selectOne(username);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public String login(String username, String password,
+                        HttpSession session) {
+        User user = userDao.selectOne(username);
         if (user == null) {
             return "用户不存在";
         } else {
             if (password.equals(user.getPassword())) {
                 session.setAttribute("user", user);
+                session.setAttribute("isLogin", true);
+                session.setAttribute("id", user.getUsername());
+                return "1";
+            } else {
+                return "密码错误";
+            }
+        }
+    }
+
+    public String adminLogin(String username, String password,
+                             HttpSession session) {
+        Admin admin = userDao.selectOne(username, password);
+        if (admin == null) {
+            return "用户不存在";
+        } else {
+            if (password.equals(admin.getPassword())) {
+                session.setAttribute("admin", admin);
                 session.setAttribute("isLogin", true);
                 return "1";
             } else {
@@ -30,20 +43,27 @@ public class UserService {
         }
     }
 
-    public String addUser(User user, HttpSession session) {
-        String result;
-        int rs = -1;
-        try {
-            rs = userDao.addUser(user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (rs == 1) {
-            result = "注册成功";
+    public String register(User register) {
+        int result = userDao.addUser(register);
+        if (result > 0) {
+            return "注册成功";
         } else {
-            result = "注册失败";
-            session.setAttribute("message", "注册失败");
+            return "用户已存在";
         }
-        return result;
+    }
+
+    public User getUserInfo(String username) {
+        return userDao.selectOne(username);
+    }
+
+    public String uploadUserInfo(User user, HttpSession session) {
+        int result = 0;
+        result = userDao.updateOne(user);
+        if (result > 0) {
+            User userInfo = getUserInfo(user.getUsername());
+            session.setAttribute("user", userInfo);
+            return "更新成功";
+        }
+        return "更新失败";
     }
 }
